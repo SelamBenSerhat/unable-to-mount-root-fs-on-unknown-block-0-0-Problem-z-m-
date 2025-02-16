@@ -1,0 +1,30 @@
+Selam, sunucumun boot partition silinmesi ile başlayan problemlerimi nasıl çözdüğümü okuyucularlar paylaşıyorum.
+
+Başlangıç olarak ihtiyaçlarımızı listeliyorum.
+
+R-Studio Recovery Program.
+
+Herhangi bir harici SD kart.
+
+1 - Başlangıçta Sunucumun boot dizini bulunan SD kartın bootfs sanal diskini R-Studio kullanarak cmdline.txt ve config.txt dosyalarını harici bilgisayarıma kurtardım. Eğer bu dosyalara ulaşabiliyor ve, sisteminizde aynı hatayı alıyorsanız vereceğim adımlarla yine sisteminizi açabilirsiniz.
+
+1 - Bu iki dosyayı kaybetmeyelim. Sonrasında ikinci harici olarak temin ettiğimiz SD kartımızın içerisine yeni bir Raspberry Pi İmaj dosyası yazdırıyoruz. İşlem sonrasında Yeni yazdırdığımız Disk içerisindeki bootfs partition'unu içerisindeki bütün dosyaları bootfs adında bir klasör oluşturup kopyalayın.
+
+
+3 - Biraz önce R-Studio kullanarak aldığımız dosyalardan cmdline.txt dosyalasını ve bootfs klasörümüzdeki cmdline.txt dosyamızı açıyoruz. R-studio ile aldığımız dosyada ufak bir değişim yapacağız.
+
+    cmdline.txt içeriği bu şekildedir. console=serial0,115200 console=tty1 root=PARTUUID=9de7a7d3-02 rootfstype=ext4 fsck.repair=yes rootwait
+
+4- Şimdi bootfs klasörü içerisindeki cmdline.txt dosyamızın " root=PARTUUID=9de7a7d3-02 " kısmındaki root= ile başlayan bölüme eski kullandığımız diskteki kısmı yapıştırıyoruz. Bunu yapma sebebimiz. Yeni 2. adımda yaptığımız işlem farklı bir PARTUUID oluşturdu. Bizim sistemimiz yeniden kurulmadığı için eski diskimize önyüklemesini istiyoruz.
+
+5 - Bootfs klasörümüzde yaklaşık 44 tane öğe bulunur. Şimdi ise Kurtaracağımız. Sunucunun bozuk bootfs partition'unu Fat32 olarak biçimlendirmemiz gerekiyor. Biçimlendirme sonrası Bootfs klasöründeki 44 dosyayı bu partition'a kopyalıyoruz.
+
+6 - SD kartı sunucuya yerleştirdikten sonra birkaç defa reboot ediyoruz. Elbette ilk birkaç denemede açılmayacak. Fakat korkmayın. CLI kullanıyorsanız. Terminal açıldığında, Desktop kullanıyorsanız masaüstü ekranı geldiğinde LxTerminal açarak apt-get update ve apt-get upgrade komutlarını sırayla uygulayın. Wifi ve bazı özellikler çalışmayacaktır. Kullandığımız kernel vb farklı olduğu için bu sorun olacaktır. 
+
+7 - Bu sorunlardan kurtulmak için rpi-update komutu uygulayın. Sistem kernel ve diğer sistemleri yedekleyip güvenli bir şekilde kendi distro ve sürümlerine uygun olarak güncelleyecektir.
+
+8 - Eğer özel ayarların tamamını hatırlamıyorsanız eski config.txt dosyasındaki ayarları yeni dosyaya aktarabilirsiniz. 
+
+Umarım yardımcı olabilmişimdir.
+
+-SelamBenSerhat
